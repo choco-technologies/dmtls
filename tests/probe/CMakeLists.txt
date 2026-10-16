@@ -1,0 +1,6 @@
+set(DMOD_MODULE_NAME tlsprobe)
+set(DMOD_STACK_SIZE 16384)
+set(DMOD_DMR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/tlsprobe.dmr)
+dmod_add_executable(${DMOD_MODULE_NAME} ${PROJECT_VERSION} tlsprobe.c)
+target_link_libraries(${DMOD_MODULE_NAME} dmtls_if)
+dmod_link_modules(${DMOD_MODULE_NAME} dmrng dmosi dmtty)

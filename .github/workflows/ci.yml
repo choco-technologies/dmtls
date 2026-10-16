@@ -1,0 +1,41 @@
+name: CI
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+jobs:
+  build:
+    name: Build and test (${{ matrix.tools }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        tools: [arch/x86_64, arch/armv7/cortex-m4, arch/armv7/cortex-m7]
+    container:
+      image: chocotechnologies/dmod:1.0.4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install interoperability tools
+        if: matrix.tools == 'arch/x86_64'
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3 openssl
+      - uses: actions/checkout@v4
+        with:
+          repository: choco-technologies/dmod
+          ref: develop
+          path: .ci-sdk
+      - name: Build matching SDK host tools
+        run: bash scripts/ci-build-sdk-tools.sh
+      - name: Build
+        run: |
+          cmake -S . -B build -DDMOD_DIR="$PWD/.ci-sdk" -DDMOD_TOOLS_NAME=${{ matrix.tools }}
+          cmake --build build --parallel 4
+          test -f build/dmf/dmtls.dmf
+          test -f build/dmf/test_dmtls.dmf
+      - name: Native tests
+        if: matrix.tools == 'arch/x86_64'
+        run: ctest --test-dir build --output-on-failure
