@@ -2,6 +2,7 @@
 #define DMTLS_PSA_CONFIG_H
 #define TF_PSA_CRYPTO_CONFIG_VERSION 0x01010100
 #include "dmtls_platform.h"
+#define MBEDTLS_DMOD_C
 /* DMOD supplies SAL, not a process/libc ABI, including on x86 hosts. */
 #define MBEDTLS_TEST_PLATFORM_IS_NOT_UNIXLIKE
 #define MBEDTLS_PLATFORM_ZEROIZE_ALT

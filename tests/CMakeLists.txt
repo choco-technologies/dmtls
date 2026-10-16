@@ -14,6 +14,7 @@ target_include_directories(${DMOD_MODULE_NAME} PRIVATE
 )
 
 target_link_libraries(${DMOD_MODULE_NAME} dmtls_if)
+dmtls_audit_module(${DMOD_MODULE_NAME})
 
 # Register the test module with ctest - this installs dependencies and runs the real module
 # through the loader: install the test module's
@@ -41,6 +42,8 @@ if(CMAKE_CROSSCOMPILING OR DMOD_ARCH MATCHES "arm")
 else()
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     find_package(Threads REQUIRED)
+    add_test(NAME dmtls_pointer_audit COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/host/test_pointer_audit.py)
     add_library(dmtls_test_engine SHARED
         ../src/dmtls.c ../src/dmtls_platform.c ../src/dmtls_config.c
         ../src/dmtls_connection.c ../src/dmtls_io.c host/platform.c

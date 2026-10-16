@@ -21,13 +21,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
-        with:
-          repository: choco-technologies/dmod
-          ref: develop
-          path: .ci-sdk
-      - name: Build matching SDK host tools
-        run: bash scripts/ci-build-sdk-tools.sh
+      - name: Install build-time audit interpreter
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
 
       - name: Extract version from tag
         id: get_version
@@ -51,7 +48,7 @@ jobs:
           # assembles build_$ARCH_DIR_NAME/packages/<module>/ for every module
           # defined in this repo's CMake config - nothing left to do here but
           # discover whatever got packaged, add release notes, and zip it.
-          cmake .. -DDMOD_DIR="$GITHUB_WORKSPACE/.ci-sdk" -DDMOD_TOOLS_NAME=arch/${{ matrix.arch_name }} -DDMOD_MODULE_VERSION="${{ steps.get_version.outputs.version }}"
+          cmake .. -DDMOD_TOOLS_NAME=arch/${{ matrix.arch_name }} -DDMOD_MODULE_VERSION="${{ steps.get_version.outputs.version }}"
           cmake --build .
 
           echo "Build completed for ${{ matrix.arch_name }}"
@@ -97,7 +94,7 @@ jobs:
 
   generate-versions-manifest:
     name: Generate versions.dmm
-    needs: [discover-architectures, build-release]
+    needs: [build-release]
     runs-on: ubuntu-latest
     permissions:
       contents: read

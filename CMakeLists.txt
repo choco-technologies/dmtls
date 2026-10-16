@@ -35,11 +35,8 @@ set(DMOD_SCRIPTS_DIR ${DMOD_DIR}/scripts CACHE PATH "DMOD scripts directory")
 include(${DMOD_DIR}/paths.cmake)
 dmod_setup_external_module()
 
-if(NOT COMMAND dmod_enable_pointer_relocations)
-    message(FATAL_ERROR "dmtls requires DMOD SDK support for absolute pointer relocations")
-endif()
-dmod_enable_pointer_relocations()
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/backend.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/pointer-audit.cmake)
 
 # Name of the module
 set(DMOD_MODULE_NAME        dmtls)
@@ -91,6 +88,9 @@ target_compile_definitions(${DMOD_MODULE_NAME} PRIVATE
     MBEDTLS_CONFIG_FILE="dmtls_mbedtls_config.h"
     TF_PSA_CRYPTO_CONFIG_FILE="dmtls_psa_config.h"
 )
+# Retain ELF metadata for a build-time audit only. The emitted DMF keeps the
+# existing header/GOT format; no relocation table or custom loader is used.
+dmtls_audit_module(${DMOD_MODULE_NAME})
 dmod_link_modules(${DMOD_MODULE_NAME} dmosi dmutc)
 option(DMTLS_BUILD_HARDWARE_PROBE "Build the STM32 hardware/RNG interoperability diagnostic" OFF)
 enable_testing()

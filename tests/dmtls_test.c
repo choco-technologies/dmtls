@@ -25,9 +25,11 @@ static int fixture_entropy(void* user,uint8_t* output,size_t size)
     for(size_t i=0;i<size;++i)output[i]=(uint8_t)(i*17+3);
     return 0;
 }
+static dmtls_entropy_fn const volatile fixture_entropy_source DMOD_GLOBAL_POINTER = fixture_entropy;
 DMOD_TEST_STEP(tls_real_module_lifecycle_and_ca_tables)
 {
-    dmtls_platform_t platform={fixture_entropy,NULL,512*1024,1};
+    dmtls_platform_t platform={0};
+    platform.entropy=fixture_entropy_source;platform.heap_limit=512*1024;platform.max_connections=1;
     DMOD_TEST_EXPECT_EQ(dmtls_initialize(&platform),DMTLS_OK);
     dmtls_config_t config=NULL;
     DMOD_TEST_EXPECT_EQ(dmtls_config_create(fixture_ca,sizeof(fixture_ca),&config),DMTLS_OK);

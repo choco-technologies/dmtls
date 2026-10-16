@@ -1,6 +1,7 @@
 #include "dmtls_internal.h"
 #include "dmtls_platform.h"
 #include "mbedtls/platform_util.h"
+#include "mbedtls/dmod.h"
 #include "psa/crypto_driver_random.h"
 #include <stdint.h>
 #include <string.h>
@@ -48,6 +49,8 @@ int mbedtls_platform_get_entropy(psa_driver_get_entropy_flags_t flags,
 int dmtls_module_init(void)
 {
     if (dmtls_lock != NULL) return 0;
+    mbedtls_dmod_pk_init();
+    mbedtls_dmod_ecp_init();
     dmtls_lock = dmosi_mutex_create(true);
     return dmtls_lock == NULL ? -ENOMEM : 0;
 }

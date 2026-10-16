@@ -17,7 +17,3 @@ build/
 # Python diagnostics
 __pycache__/
 *.pyc
-
-# CI SDK/tool checkouts
-.ci-sdk/
-.ci-tools/

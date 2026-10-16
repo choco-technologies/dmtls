@@ -1,5 +1,7 @@
 #ifndef DMTLS_MBEDTLS_CONFIG_H
 #define DMTLS_MBEDTLS_CONFIG_H
+#define MBEDTLS_DMOD_C
+#define MBEDTLS_X509_REMOVE_INFO
 #define MBEDTLS_CONFIG_VERSION 0x04010100
 /* Use the upstream portable IP-literal parser on every DMOD architecture. */
 #define MBEDTLS_TEST_SW_INET_PTON

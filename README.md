@@ -1,6 +1,6 @@
 # dmtls
 
-Transport-independent TLS client library for DMOD, backed by Mbed TLS 4.1.1
+Transport-independent TLS client library for DMOD, backed by DMOD-adapted forks of Mbed TLS 4.1.1
 and TF-PSA-Crypto 1.1.1. It supports TLS 1.2 and TLS 1.3, certificate chains,
 hostname verification and SNI, with ECDHE and RSA/ECDSA authentication.
 The backend is compiled into this module; its headers and ABI are private.
@@ -19,15 +19,15 @@ cmake --build build/native --parallel
 ctest --test-dir build/native --output-on-failure
 ```
 
-Use an updated DMOD SDK, runtime and matching metadata tools with absolute
-pointer relocation support; older loaders reject this module's extended header.
-The CI helper builds matching tools from SDK source.
+The existing DMOD SDK, tools and GOT loader are sufficient. The module keeps
+the original 240-byte DMF header. A read-only ELF audit rejects absolute pointers
+outside the sections already handled by DMOD.
 
 For Cortex-M7 use `-DDMOD_TOOLS_NAME=arch/armv7/cortex-m7` in a separate build
 directory. Direct DMOD dependencies (`dmosi`, `dmutc`) are unversioned; the
-packager resolves them. The upstream crypto source archive is pinned with a
-SHA-256 hash for reproducibility. Its licenses are included in the package. The validated Cortex-M7 build is about
-111.4 KiB compressed (137.5 KiB loaded image), plus TLS heap.
+packager resolves them. The reviewed third-party fork source archives are pinned by commit and
+SHA-256 for reproducibility. Its licenses are included in the package. The validated Cortex-M7 build is about
+109.9 KiB compressed (137.1 KiB loaded image), plus TLS heap.
 
 ## Use
 

@@ -9,6 +9,7 @@
 #define CAPACITY 32768u
 struct transport {unsigned char rx[CAPACITY];size_t rx_pos,rx_size;unsigned char tx[CAPACITY];size_t tx_size;};
 static int entropy(void* user, uint8_t* out, size_t size) {(void)user;return dmrng_fill(out,size);}
+static dmtls_entropy_fn const volatile entropy_source DMOD_GLOBAL_POINTER = entropy;
 static dmtls_result_t send_bytes(void* user,const uint8_t* in,size_t size,size_t* sent)
 {
     struct transport* t=user;*sent=0;
@@ -64,7 +65,8 @@ int main(int argc,char* argv[])
     void* file=Dmod_FileOpen(argv[2],"rb");
     if(file==NULL){Dmod_Free(t);return 1;}
     unsigned char ca[4096];size_t size=Dmod_FileRead(ca,1,sizeof(ca),file);Dmod_FileClose(file);
-    dmtls_platform_t platform={entropy,NULL,512*1024,1};
+    dmtls_platform_t platform={0};
+    platform.entropy=entropy_source;platform.heap_limit=512*1024;platform.max_connections=1;
     dmtls_config_t config=NULL;dmtls_connection_t connection=NULL;
     Dmod_Printf("TLS_STAGE initialize\n");
     dmtls_result_t rc=dmtls_initialize(&platform);
