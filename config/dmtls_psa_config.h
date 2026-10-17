@@ -23,6 +23,9 @@
 #define MBEDTLS_ASN1_WRITE_C
 #define MBEDTLS_BASE64_C
 #define MBEDTLS_PEM_PARSE_C
+/* Use upstream architecture-selected arithmetic kernels (portable fallback
+ * remains available where the compiler has no supported assembly backend). */
+#define MBEDTLS_HAVE_ASM
 #define MBEDTLS_ECP_NIST_OPTIM
 #define MBEDTLS_PSA_KEY_SLOT_COUNT 32
 #define PSA_WANT_ALG_GCM 1

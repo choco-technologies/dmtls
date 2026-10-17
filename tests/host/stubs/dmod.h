@@ -3,6 +3,7 @@
 #define DMOD_GLOBAL_POINTER __attribute__((section(".got")))
 #define DMOD_MOD_DEFS_H_dmutc
 #define dmod_dmutc_api(v,r,n,a) r dmutc##n a
+#define dmod_dmutc_dif(v,r,n,a) r dmutc##n a
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
