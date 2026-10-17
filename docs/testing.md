@@ -91,3 +91,13 @@ Hardware firmware used the original DMOD loader revision, with no relocation
 extension. The independent process/FreeRTOS lifetime fixes remain in the boot
 integration. Fork changes: [Mbed TLS](https://github.com/choco-technologies/mbedtls/pull/1)
 and [TF-PSA-Crypto](https://github.com/choco-technologies/TF-PSA-Crypto/pull/1).
+
+## Arithmetic backend configuration
+
+The backend enables upstream `MBEDTLS_HAVE_ASM`, as in the upstream default
+configuration. It selects supported architecture-specific multiplication kernels
+and otherwise retains portable arithmetic. This does not change verification,
+algorithms, public APIs, entropy requirements or the DMOD format. ARM and x86
+builds, pointer audits and native interoperability tests are repeated for it.
+Public-server HTTPS on STM32 completed with the optimized configuration; the
+longer certificate chain exposed handshake latency in the previous configuration.
